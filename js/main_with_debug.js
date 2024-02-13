@@ -1,6 +1,8 @@
 //initialize function called when the script loads
 function initialize(){
 	cities();
+	loadData();
+	debugAjax();
 };
 
 //function to create a table with cities and their populations
@@ -85,13 +87,24 @@ function addEvents(){
 	//select the table element
 	table = document.querySelector("table");
 
-	  //add mouseover event to each table cell
-	  table.querySelectorAll("td").forEach(function(cell) {
-        cell.addEventListener("mouseover", function(){
-            // Set the text color of the cell to brown
-            cell.style.color = "brown";
-        }); 
-    });
+	  //add mouseover event
+	document.querySelector("table").addEventListener("mouseover", function(){
+		var color = "rgb(";
+		//generate random color
+		for (var i=0; i<3; i++){
+
+			var random = Math.round(Math.random() * 255);
+			color += random;
+
+			if (i<2){
+				color += ",";
+			} else {
+				color += ")";
+			};
+		}
+		//style table with the random style
+		table.style.color = color;
+	}); 
 
     //add mouseout event to each table cell
     table.querySelectorAll("td").forEach(function(cell) {
@@ -111,3 +124,30 @@ function addEvents(){
 }
 //call the initialize function when the document has loaded
 document.addEventListener('DOMContentLoaded',initialize)
+
+//define function to load geojson data 
+function loadData(){
+	var cities;
+	//use fetch to retrieve data 
+	fetch("data/MegaCities.geojson")
+		.then(function(response){
+			return response.json();
+		})
+		.then(function(response) {
+			cities = response; //assign data to 'cities' variable 
+			console.log(cities); //log the 'cities' data to the console
+		})
+}
+//define callback function
+function debugCallback(myData){
+	document.querySelector("#mydiv").insertAdjacentHTML('beforeend',"GeoJSON data: " + JSON.stringify(myData));
+};
+
+// define a function to debug the data 
+function debugAjax(){
+	fetch("data/MegaCities.geojson")
+		.then(function(response){
+			return response.json();
+		})
+		.then(debugCallback)//send retrieved data to a callback function 
+};
