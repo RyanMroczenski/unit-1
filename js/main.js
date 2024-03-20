@@ -157,4 +157,4 @@ window.onload = function(){
             return "Pop. " + format(d.population); //use format generator to format numbers
         });
 
-};
+}; 
